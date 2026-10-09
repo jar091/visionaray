@@ -269,7 +269,9 @@ next:
         {
             auto hrN = isect(ray, prims[i]);
 
-            if (!any(hrN.hit && hrN.t < r1.tmax))
+            // See intersect_ray1_bvhN.inl: hits behind the ray origin are
+            // not taken.
+            if (!any(hrN.hit && hrN.t >= r1.tmin && hrN.t < r1.tmax))
             {
                 continue;
             }

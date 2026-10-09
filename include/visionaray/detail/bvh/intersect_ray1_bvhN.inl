@@ -453,7 +453,11 @@ next:
         {
             auto hrN = isect(ray, prims[i]);
 
-            if (!any(hrN.hit && hrN.t < r1.tmax))
+            // Primitive intersectors may report hits behind the ray origin
+            // (t < tmin), e.g. for a ray that starts on a cone or cylinder
+            // cap. Such a hit must not be taken: it would end an any-hit
+            // traversal, or shorten the ray, at a hit the caller discards.
+            if (!any(hrN.hit && hrN.t >= r1.tmin && hrN.t < r1.tmax))
             {
                 continue;
             }
